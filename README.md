@@ -14,6 +14,6 @@ Use Maven to build and run the application:
 
 *mvn clean compile install exec:java*
 
-This call the Main class which will set up the Spring stuff and then call the aptly named
+This calls the Main class, which will then set up the Spring stuff and call the aptly named method
 [Main.doYourStuffHere(String [] args)](src/main/java/net/stellers/sakai/resttest/Main.java)
 which currently changes a user's last name.
