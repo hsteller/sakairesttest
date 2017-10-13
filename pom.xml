@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>net.stellers</groupId>
+	<artifactId>resttest</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Rest test</name>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<spring.version>4.3.9.RELEASE</spring.version>
+		<lombok.version>1.16.18</lombok.version>
+		<logback.version>1.2.3</logback.version>
+		<slf4j.version>1.7.9</slf4j.version>
+		<java.version>1.8</java.version>
+		<jaxrs.version>2.1</jaxrs.version>
+		<jersey.version>2.26</jersey.version>
+		<javax.json.version>1.1</javax.json.version>
+		<jackson.version>2.9.1</jackson.version>
+	</properties>
+
+
+
+	<dependencies>
+
+		<!-- REST client API and provider (jersey) -->
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<version>${jaxrs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-spring4</artifactId>
+			<version>${jersey.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-json-provider</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+
+
+		<!-- for converting responses into sakai objects -->
+		<!-- Sakai version -->
+		<!-- nice idea, but doesn't work; also, kernel-impl pulls in everything 
+			but the kitchen sink, which creates a funny mess when combined with JAX-RS's 
+			(and potentially Spring's) auto discovery mechanism - for example, this client 
+			here might suddenly start using Apache CXF instead of Jersey -->
+		<!-- <dependency> <groupId>org.sakaiproject.kernel</groupId> <artifactId>sakai-kernel-api</artifactId> 
+			<version>${sakai.kernel.version}</version> </dependency> <dependency> <groupId>org.sakaiproject.kernel</groupId> 
+			<artifactId>sakai-kernel-impl</artifactId> <version>${sakai.kernel.version}</version> 
+			</dependency> -->
+
+
+
+
+
+		<!-- logging via slf4 and logback classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<!-- compile time code processor/generator -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<!-- spring because why not -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+
+	</dependencies>
+
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.2</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mainClass>net.stellers.sakai.resttest.Main</mainClass>
+					<arguments>
+						<argument>foo</argument>
+						<argument>bar</argument>
+					</arguments>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
