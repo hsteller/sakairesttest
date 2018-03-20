@@ -22,11 +22,15 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
 	private final String ENDPOINT="/user";
 
+
+	private final WebTarget prepareCall(String endpoint) {
+		WebTarget t = rsClient.target(baseUrl+ENDPOINT+endpoint);
+		t.register(authFilter); // takes care of authentication via the credentials in "project.properties"
+		return t;
+	}
 	
 	@Override
-	public JsonNode getCurrentUserRAW() {		
-		WebTarget t = rsClient.target(baseUrl+ENDPOINT+"/current.json");
-		t.register(authFilter);		
+	public JsonNode getCurrentUserRAW() {					
 		return getCurrentUser(JsonNode.class);		
 	}
 	
@@ -35,9 +39,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 		return getCurrentUser(User.class);
 	}
 
-	private final <T> T  getCurrentUser(Class<T> clazz) {
-		WebTarget t = rsClient.target(baseUrl+ENDPOINT+"/current.json");
-		t.register(authFilter);
+	
+	private final <T> T  getCurrentUser(Class<T> clazz) {		
+		WebTarget t = prepareCall("/current.json");
 		T data = t.request(MediaType.APPLICATION_JSON).buildGet().invoke(clazz);
 		return data;
 	}
@@ -53,8 +57,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	}
 	
 	private final <T> T  getUser(Class<T> clazz, String sakaiUserId) {
-		WebTarget t = rsClient.target(baseUrl+ENDPOINT+"/"+sakaiUserId+".json");
-		t.register(authFilter);
+		WebTarget t = prepareCall("/"+sakaiUserId+".json");
 		Response r = t.request(MediaType.APPLICATION_JSON).buildGet().invoke();
 		if (r.getStatus()==200) {
 			return  r.readEntity(clazz);
@@ -94,10 +97,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 	
 
 	
-	private final<T> void updateUser( String userId, T data){
-		//String userId = user.get("id").asText(); 		
-		WebTarget t = rsClient.target(baseUrl+ENDPOINT+"/"+userId);
-		t.register(authFilter);		
+	private final<T> void updateUser( String userId, T data){ 		
+		WebTarget t = prepareCall("/"+userId);
 		Entity<T>ent = Entity.entity(data, MediaType.APPLICATION_JSON);
 		Invocation i = t.request(MediaType.APPLICATION_JSON).buildPut(ent);		
 		Response r = i.invoke();
@@ -137,8 +138,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 			log.error(e.getMessage(),e);
 			throw new RuntimeException(e);
 		}						
-		WebTarget t = rsClient.target(baseUrl+ENDPOINT);
-		t.register(authFilter);
+		WebTarget t = prepareCall(""); // no specific endpoint; being a POST is what decides what is being done
 		Entity<String> ent = Entity.entity (json, MediaType.APPLICATION_JSON);
 		Invocation i = t.request(MediaType.APPLICATION_JSON).buildPost(ent);	
 		Response r = i.invoke();
@@ -158,8 +158,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
 	@Override
 	public boolean deleteUser(String sakaiUserId) {		 	
-		WebTarget t = rsClient.target(baseUrl+ENDPOINT+"/"+sakaiUserId);
-		t.register(authFilter);		
+		WebTarget t = prepareCall("/"+sakaiUserId);
 		Invocation i = t.request(MediaType.APPLICATION_JSON).buildDelete();		
 		Response r = i.invoke();
 		String jsonString = r.readEntity(String.class);
