@@ -23,6 +23,10 @@ import net.stellers.sakai.resttest.service.SessionService;
 @Component (value="myAuthFilter")
 public class AuthenticationFilter implements ClientRequestFilter, DisposableBean{
 
+	/** Setting a property with this name to a non-NULL value in the ClientRequestContext
+	 * will prevent this Filter from creating a new session.
+	 * With this mechanism we can do a "logout" without creating a new session.    
+	 */
 	public static final String PROP_NO_SESSION_CREATION="net.stellers.sakai.resttest.authenticationFilter.dontCreateSession";
 	
 	@Autowired
