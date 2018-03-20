@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor // needed by @Builder if a NoArgsConstructor is present (which jackson needs)
 @Builder (builderMethodName="privateBuilder")
 public class User {
-	// user propertis + named were obtained from the returned JSON
+	// user properties + names were obtained from the returned "raw" JSON data
     private String id;
     private String eid;
     private String password;
