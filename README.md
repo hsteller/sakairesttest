@@ -2,7 +2,7 @@
 
 An example client for messing around with Sakai's web service interface.
 It's a Spring-based application which uses JAX-RS with Jersey and Jackson as providers.
-The example retrieves users by (internal) ID and updates the last name of one user.
+The example shows two different ways to perform basic CRUD operations with Sakai's user API.
 
 ## Howto
 
